@@ -1,0 +1,61 @@
+DROP DATABASE IF EXISTS fini_db;
+CREATE DATABASE fini_db;
+
+// Foreign Key(외래키) 지정 방법은 References Table의 외래키와 Parent/Upper table(상위 테이블)의 같은 데이타 타입과 사이즈여야 연결이 되며 Unique or Primary Key이어야 연결이 됨. And same datatype/size as well.
+
+CREATE TABLE customer
+(cus_num CHAR(5) NOT NULL PRIMARY KEY,
+ cus_name CHAR(8) NOT NULL,
+ birth DATE NULL,
+ sex CHAR(6) NOT NULL,
+ addrs CHAR(10) NOT NULL,
+ phone CHAR(11) NULL
+ );
+INSERT INTO customer VALUES('A0000', '강문희', '1965-11-07','female', 'seoul', '01066589322');
+INSERT INTO customer VALUES('A0001', '이순재', '1967-02-08','male', 'seoul', '01045789965');
+INSERT INTO customer VALUES('A0002', '최희지', '1965-04-22','female', 'seoul', '01041213365');
+ 
+ 
+ CREATE TABLE sales
+(sales_num INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+ cus_num CHAR(5) NOT NULL,
+ goods CHAR(20) NOT NULL,
+ size CHAR(8) NOT NULL,
+ color CHAR(10) NOT NULL,
+ price VARCHAR(8) UNSIGNED NOT NULL,
+ amount SMALLINT UNSIGNED NOT NULL,
+
+ FOREIGN KEY(cus_num) REFERENCES customer(cus_num)
+ );
+INSERT INTO sales VALUES(NULL,'A0000','Lomance Cushion', '45x45', 'Pink', '208,000','4');
+INSERT INTO sales VALUES(NULL,'A0001','Lomance Lug', '175x240', 'Gray', '350,000','1');
+INSERT INTO sales VALUES(NULL,'A0002','Lomance Lug', '85x150', 'Blue', '210,000','1');
+ 
+ 
+ CREATE TABLE location
+(location_num INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+ cus_num CHAR(5) NOT NULL,
+ location_name CHAR(30) NOT NULL,
+ location_city CHAR(10) NOT NULL,
+ visit_date DATE NOT NULL,
+ visit_amount SMALLINT UNSIGNED NOT NULL,
+
+ FOREIGN KEY(cus_num) REFERENCES sales(cus_num)
+ );
+INSERT INTO location VALUES(NULL,'A0000','Lasitta_Yangjae', 'Seoul', '2019-12-03', 1 );
+INSERT INTO location VALUES(NULL,'A0001','Gwangju_Opo','Gyeong-gi', '2019-12-03', 1);
+INSERT INTO location VALUES(NULL,'A0002','Lasitta_Yangjae','Seoul', '2019-12-03', 1);
+
+//모든 데이터 보기 + join
+SELECT *
+FROM customer A, sales B , location C
+WHERE A.cus_num = B.cus_num AND B.cus_num = C.cus_num;
+
+OR
+
+//특정 데이터 보기
+SELECT *
+FROM customer
+	 INNER JOIN sales
+     ON customer.cus_num = sales.cus_num;
+
